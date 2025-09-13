@@ -1,5 +1,5 @@
 "use client";
-import DarkModeButton from "./buttons/DarkModeButton";
+import DarkModeButton from "./DarkModeButton";
 
 export default function Header() {
   return (

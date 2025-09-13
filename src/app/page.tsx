@@ -1,6 +1,10 @@
+import SpeechsMain from "@/components/SpeechMain";
+
 
 export default function Home() {
   return (
-    <div>custom speech</div>
+    <main>
+      <SpeechsMain />
+    </main>
   );
 }
