@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import CopySpeechButton from "@/components/buttons/CopySpeechButton";
 
 interface TicketData {
@@ -13,34 +12,27 @@ interface InicioProps {
   tickets?: TicketData[];
 }
 
+// Función para obtener saludo según hora de Perú
+const getPeruGreeting = (): string => {
+  // Hora actual del navegador
+  const now = new Date();
+
+  // Convertir a hora de Perú usando UTC offset (-5)
+  const peruHour = now.getUTCHours() - 5; // Perú = UTC-5
+  const hour = (peruHour + 24) % 24; // normalizar 0-23
+
+  if (hour >= 6 && hour < 12) return "Buenos días";
+  if (hour >= 12 && hour < 19) return "Buenas tardes";
+  return "Buenas noches";
+};
+
 export default function Inicio({ ticket, tickets = [] }: InicioProps) {
-  const [greeting, setGreeting] = useState<string | null>(null);
+  const greeting = getPeruGreeting();
 
-  useEffect(() => {
-    const fetchTime = async () => {
-      try {
-        const res = await fetch("https://worldtimeapi.org/api/timezone/America/Lima");
-        if (!res.ok) throw new Error("No se pudo obtener la hora");
-        const data = await res.json();
-        const hour = new Date(data.datetime).getHours();
-
-        if (hour >= 6 && hour < 12) setGreeting("Buenos días");
-        else if (hour >= 12 && hour < 19) setGreeting("Buenas tardes");
-        else setGreeting("Buenas noches");
-      } catch (err) {
-        console.error("Error al obtener hora de Perú:", err);
-        setGreeting("Hola"); // fallback si falla la API
-      }
-    };
-
-    fetchTime();
-  }, []);
-
-  // Mientras no llega la hora, mostramos un placeholder
-  if (!greeting) return <p className="p-6 text-gray-500">Cargando saludo...</p>;
-
+  // Usar el primer ticket dinámico como principal si existe
   const mainTicket = tickets?.[0]?.ticket || ticket || "*******";
 
+  // Primer speech
   const firstParagraphs = [
     `${greeting}, estimados, reciban un cordial saludo.`,
     `Se genera el ticket ${mainTicket}`,
@@ -49,6 +41,7 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
 
   const firstSpeechText = firstParagraphs.join("\n\n");
 
+  // Segundo speech dinámico con numeración TK1, TK2, ...
   const secondParagraphs = [
     `${greeting}, estimados, reciban un cordial saludo,`,
     "para atender lo solicitado se generan los siguientes tickets:",
@@ -59,6 +52,7 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Primer speech */}
       <div className="space-y-4">
         {firstParagraphs.map((p, i) => <p key={i}>{p}</p>)}
         <div className="flex justify-end">
@@ -68,6 +62,7 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
 
       <hr className="my-4 border-gray-400" />
 
+      {/* Segundo speech dinámico */}
       <div className="space-y-4">
         {secondParagraphs.map((p, i) => <p key={i}>{p}</p>)}
         <div className="flex justify-end">
@@ -77,3 +72,12 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
