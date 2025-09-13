@@ -9,18 +9,18 @@ interface TicketData {
 }
 
 interface InicioProps {
-  ticket?: string;           // Ticket individual
-  tickets?: TicketData[];    // Tickets dinámicos
+  ticket?: string;
+  tickets?: TicketData[];
 }
 
 export default function Inicio({ ticket, tickets = [] }: InicioProps) {
-  const [greeting, setGreeting] = useState("Hola");
+  const [greeting, setGreeting] = useState<string | null>(null);
 
-  // Obtener hora de Perú desde internet
   useEffect(() => {
     const fetchTime = async () => {
       try {
         const res = await fetch("https://worldtimeapi.org/api/timezone/America/Lima");
+        if (!res.ok) throw new Error("No se pudo obtener la hora");
         const data = await res.json();
         const hour = new Date(data.datetime).getHours();
 
@@ -29,37 +29,38 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
         else setGreeting("Buenas noches");
       } catch (err) {
         console.error("Error al obtener hora de Perú:", err);
+        setGreeting("Hola"); // fallback si falla la API
       }
     };
+
     fetchTime();
   }, []);
 
-  // Ticket principal
+  // Mientras no llega la hora, mostramos un placeholder
+  if (!greeting) return <p className="p-6 text-gray-500">Cargando saludo...</p>;
+
   const mainTicket = tickets?.[0]?.ticket || ticket || "*******";
 
-  // Primer discurso
   const firstParagraphs = [
     `${greeting}, estimados, reciban un cordial saludo.`,
     `Se genera el ticket ${mainTicket}`,
     "para atender lo solicitado."
   ];
+
   const firstSpeechText = firstParagraphs.join("\n\n");
 
-  // Segundo discurso con numeración dinámica TK1, TK2, ...
   const secondParagraphs = [
     `${greeting}, estimados, reciban un cordial saludo,`,
     "para atender lo solicitado se generan los siguientes tickets:",
     ...tickets.map((t, i) => `TK${i + 1}: ${t.ticket}${t.info ? ` (${t.info})` : ""}`)
   ];
+
   const secondSpeechText = secondParagraphs.join("\n\n");
 
   return (
     <div className="p-6 space-y-6">
-      {/* Primer discurso */}
       <div className="space-y-4">
-        {firstParagraphs.map((p, i) => (
-          <p key={i} className="mb-0">{p}</p>
-        ))}
+        {firstParagraphs.map((p, i) => <p key={i}>{p}</p>)}
         <div className="flex justify-end">
           <CopySpeechButton text={firstSpeechText} />
         </div>
@@ -67,11 +68,8 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
 
       <hr className="my-4 border-gray-400" />
 
-      {/* Segundo discurso */}
       <div className="space-y-4">
-        {secondParagraphs.map((p, i) => (
-          <p key={i} className="mb-0">{p}</p>
-        ))}
+        {secondParagraphs.map((p, i) => <p key={i}>{p}</p>)}
         <div className="flex justify-end">
           <CopySpeechButton text={secondSpeechText} />
         </div>
