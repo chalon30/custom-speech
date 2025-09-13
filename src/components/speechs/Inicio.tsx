@@ -9,8 +9,8 @@ interface TicketData {
 }
 
 interface InicioProps {
-  ticket?: string;
-  tickets?: TicketData[];
+  ticket?: string;           // Ticket individual
+  tickets?: TicketData[];    // Tickets dinámicos
 }
 
 export default function Inicio({ ticket, tickets = [] }: InicioProps) {
@@ -20,7 +20,7 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
   useEffect(() => {
     const fetchTime = async () => {
       try {
-        const res = await fetch("http://worldtimeapi.org/api/timezone/America/Lima");
+        const res = await fetch("https://worldtimeapi.org/api/timezone/America/Lima");
         const data = await res.json();
         const hour = new Date(data.datetime).getHours();
 
@@ -34,28 +34,32 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
     fetchTime();
   }, []);
 
+  // Ticket principal
   const mainTicket = tickets?.[0]?.ticket || ticket || "*******";
 
+  // Primer discurso
   const firstParagraphs = [
     `${greeting}, estimados, reciban un cordial saludo.`,
     `Se genera el ticket ${mainTicket}`,
     "para atender lo solicitado."
   ];
-
   const firstSpeechText = firstParagraphs.join("\n\n");
 
+  // Segundo discurso con numeración dinámica TK1, TK2, ...
   const secondParagraphs = [
     `${greeting}, estimados, reciban un cordial saludo,`,
     "para atender lo solicitado se generan los siguientes tickets:",
     ...tickets.map((t, i) => `TK${i + 1}: ${t.ticket}${t.info ? ` (${t.info})` : ""}`)
   ];
-
   const secondSpeechText = secondParagraphs.join("\n\n");
 
   return (
     <div className="p-6 space-y-6">
+      {/* Primer discurso */}
       <div className="space-y-4">
-        {firstParagraphs.map((p, i) => <p key={i}>{p}</p>)}
+        {firstParagraphs.map((p, i) => (
+          <p key={i} className="mb-0">{p}</p>
+        ))}
         <div className="flex justify-end">
           <CopySpeechButton text={firstSpeechText} />
         </div>
@@ -63,8 +67,11 @@ export default function Inicio({ ticket, tickets = [] }: InicioProps) {
 
       <hr className="my-4 border-gray-400" />
 
+      {/* Segundo discurso */}
       <div className="space-y-4">
-        {secondParagraphs.map((p, i) => <p key={i}>{p}</p>)}
+        {secondParagraphs.map((p, i) => (
+          <p key={i} className="mb-0">{p}</p>
+        ))}
         <div className="flex justify-end">
           <CopySpeechButton text={secondSpeechText} />
         </div>
