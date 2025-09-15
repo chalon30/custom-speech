@@ -201,7 +201,7 @@ export default function TicketBox({
                 ticketRefs.current[index] = el;
               }}
               className={`
-    flex-[2] max-w-[140px] px-2 py-2 border rounded-lg
+    flex-[2] max-w-[160px] px-2 py-2 border rounded-lg
     ${duplicateIndex === index ? "border-red-500" : "border-gray-300"}
     focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500
     transition-all duration-200 placeholder-gray-400
