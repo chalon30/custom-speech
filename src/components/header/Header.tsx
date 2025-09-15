@@ -3,7 +3,7 @@ import DarkModeButton from "./DarkModeButton";
 
 export default function Header() {
   return (
-    <header className="bg-orange-500 text-white shadow-lg sticky top-0 z-50 select-none">
+    <header className="bg-orange-500 text-white shadow-lg select-none">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Marca */}
         <h1 className="text-lg sm:text-2xl md:text-3xl font-extrabold tracking-wide select-none">

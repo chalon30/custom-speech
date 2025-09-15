@@ -12,6 +12,15 @@ export default function TicketsTable({ tickets, onUpdate }: TicketsTableProps) {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
 
+  // Función para obtener la fecha actual en dd/mm/aa
+  const getCurrentDate = () => {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = String(now.getFullYear()).slice(-2);
+    return `${day}/${month}/${year}`;
+  };
+
   const handleDelete = (index: number) => {
     const newTickets = tickets.filter((_, i) => i !== index);
     onUpdate(newTickets); // actualizar en el padre
@@ -30,24 +39,32 @@ export default function TicketsTable({ tickets, onUpdate }: TicketsTableProps) {
     onUpdate(newTickets);
   };
 
-  const handleCopy = (ticket: string) => {
-    navigator.clipboard.writeText(ticket);
-  };
-
   const handleCopyAll = () => {
-    const allTickets = tickets.map(t => t.ticket).join("\n");
+    const date = getCurrentDate();
+    const allTickets = [date, ...tickets.map(t => t.ticket)].join("\n");
     navigator.clipboard.writeText(allTickets);
   };
 
   const handleExport = () => {
-    const content = tickets.map(t => t.ticket).join("\n");
+    const date = getCurrentDate();
+    const content = [date, ...tickets.map(t => t.ticket)].join("\n");
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "tickets.txt";
+    a.download = `tickets_${date.replace(/\//g, "-")}.txt`; // nombre con fecha
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleCopy = (ticket: string) => {
+    navigator.clipboard.writeText(ticket);
+  };
+
+  const handleClearAll = () => {
+    if (confirm("¿Estás seguro que quieres limpiar todos los tickets?")) {
+      onUpdate([]); // limpiar todos los tickets
+    }
   };
 
   return (
@@ -64,6 +81,12 @@ export default function TicketsTable({ tickets, onUpdate }: TicketsTableProps) {
           className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-400 transition-colors"
         >
           Exportar a .txt
+        </button>
+        <button
+          onClick={handleClearAll}
+          className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors"
+        >
+          Limpiar todos
         </button>
       </div>
 

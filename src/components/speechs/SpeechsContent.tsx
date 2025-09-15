@@ -1,6 +1,6 @@
 "use client";
 
-import Inicio from "@/components/speechs/Inicio";
+import Inicio from "@/components/speechs/ReqInc";
 // import Discursos from "@/components/speechs/Discursos";
 // import Ensayos from "@/components/speechs/Ensayos";
 // import Ideas from "@/components/speechs/Ideas";

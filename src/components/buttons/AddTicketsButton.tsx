@@ -6,9 +6,15 @@ interface AddTicketsButtonProps {
   tickets: TicketData[];
   existingTickets: TicketData[];
   onAdd: (tickets: TicketData[]) => void;
+  onClear?: () => void; // función opcional para limpiar inputs
 }
 
-export default function AddTicketsButton({ tickets, existingTickets, onAdd }: AddTicketsButtonProps) {
+export default function AddTicketsButton({
+  tickets,
+  existingTickets,
+  onAdd,
+  onClear,
+}: AddTicketsButtonProps) {
   const handleClick = () => {
     const validTickets = tickets.filter(t => t.ticket.trim() !== "");
     if (validTickets.length === 0) {
@@ -30,6 +36,9 @@ export default function AddTicketsButton({ tickets, existingTickets, onAdd }: Ad
     if (newTickets.length > 0) {
       onAdd(newTickets);
     }
+
+    // Limpiar los inputs que ya se agregaron
+    if (onClear) onClear();
   };
 
   return (
@@ -43,7 +52,7 @@ export default function AddTicketsButton({ tickets, existingTickets, onAdd }: Ad
         transition-colors duration-200
       "
     >
-      Agregar
+      Agregar a la Tabla
     </button>
   );
 }
