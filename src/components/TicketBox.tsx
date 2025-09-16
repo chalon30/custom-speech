@@ -181,7 +181,7 @@ export default function TicketBox({
         <button
           type="button"
           onClick={handleClearAll}
-          className="px-4 py-2 bg-red-400 text-white rounded-md hover:bg-yellow-400 transition-colors"
+          className="px-2 py-1 bg-red-400 text-white rounded-md hover:bg-yellow-400 transition-colors"
         >
           Limpiar los campos
         </button>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "../components/header/Header";
+import { GreetingProvider } from "@/context/GreetingContext"; // 👈 Importamos el provider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +29,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}
       >
-        {/* Aquí se muestra el Header en todas las páginas */}
-        <Header />
-        {/* Contenido de cada página */}
-        <main className="max-w-7xl mx-auto p-6">{children}</main>
+        {/* Todo envuelto en GreetingProvider */}
+        <GreetingProvider>
+          {/* Header global */}
+          <Header />
+          {/* Contenido de cada página */}
+          <main className="max-w-7xl mx-auto p-6">{children}</main>
+        </GreetingProvider>
       </body>
     </html>
   );

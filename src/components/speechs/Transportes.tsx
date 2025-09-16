@@ -1,6 +1,8 @@
 "use client";
 
 import CopySpeechButton from "@/components/buttons/CopySpeechButton";
+import GreetingSelector from "@/components/GreetingSelector";
+import { useGreeting } from "@/context/GreetingContext"; // 👈 usamos el contexto
 import { TicketData } from "../TicketBox";
 
 interface TransportesProps {
@@ -17,12 +19,13 @@ const getPeruGreeting = (): string => {
 };
 
 export default function Transportes({ tickets = [] }: TransportesProps) {
+  const { saludo } = useGreeting(); // 👈 traemos el saludo global
   const greeting = getPeruGreeting();
   const transporteText =
     tickets.length > 1 ? "los transportes" : "el transporte";
 
   // Parte inicial: saludo e introducción (siempre)
-  let speechText = `${greeting}, estimada, reciba un cordial saludo;\n\nSe procede con ${transporteText}.\n\n`;
+  let speechText = `${greeting}, ${saludo.toLowerCase()}, reciba un cordial saludo;\n\nSe procede con ${transporteText}.\n\n`;
 
   if (tickets.length === 0) {
     // Caso sin tickets
@@ -53,10 +56,16 @@ export default function Transportes({ tickets = [] }: TransportesProps) {
   }
 
   return (
-    <div className="p-6 space-y-4">
-      <pre className="whitespace-pre-wrap">{speechText}</pre>
-      <div className="flex justify-end">
-        <CopySpeechButton text={speechText} />
+    <div className="p-6 space-y-6">
+      {/* 👇 Selector de saludo (global) */}
+      <GreetingSelector />
+
+      {/* Primer speech */}
+      <div className="space-y-4">
+        <pre className="whitespace-pre-wrap">{speechText}</pre>
+        <div className="flex justify-end">
+          <CopySpeechButton text={speechText} />
+        </div>
       </div>
     </div>
   );
